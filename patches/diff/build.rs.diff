@@ -1,0 +1,20 @@
+--- ../arm64/quiche/src/build.rs	2021-05-17 22:34:39.000000000 +0900
++++ modified/build.rs	2021-05-17 22:35:12.000000000 +0900
+@@ -52,7 +52,6 @@ const CMAKE_PARAMS_ARM_LINUX: &[(&str, &
+ /// so adjust library location based on platform and build target.
+ /// See issue: https://github.com/alexcrichton/cmake-rs/issues/18
+ fn get_boringssl_platform_output_path() -> String {
+-    if cfg!(windows) {
+         // Code under this branch should match the logic in cmake-rs
+         let debug_env_var =
+             std::env::var("DEBUG").expect("DEBUG variable not defined in env");
+@@ -79,9 +78,6 @@ fn get_boringssl_platform_output_path()
+         };
+
+         subdir.to_string()
+-    } else {
+-        "".to_string()
+-    }
+ }
+
+ /// Returns a new cmake::Config for building BoringSSL.
