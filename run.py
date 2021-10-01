@@ -90,7 +90,16 @@ TLS_RS_FUNCTIONS_TO_REPLACE = [
 ]
 
 RAND_RS_FUNCTIONS_TO_REPLACE = [
-        'RAND_bytes'
+    'RAND_bytes'
+]
+
+CRYPTO_RS_FUNCTIONS_TO_REPLACE = [
+    'EVP_aead_aes_128_gcm',
+    'EVP_aead_aes_256_gcm',
+    'EVP_aead_chacha20_poly1305',
+    'EVP_AEAD_CTX_init',
+    'EVP_AEAD_CTX_open',
+    'EVP_AEAD_CTX_seal_scatter'
 ]
 
 def parse_args():
@@ -169,7 +178,6 @@ def main(args):
         os.chdir(arch)
         checkout_quiche_repository(args.ver)
         patch_files()
-        #for build_type in ['Debug', 'RelWithDebInfo', 'Release', 'MinSizeRel']:
         for build_type in ['MinSizeRel']:
             build_boringssl(build_type, sdk, arch, args.prefix)
         os.chdir("quiche/src")
@@ -180,6 +188,8 @@ def main(args):
         replace_fn_name("tls.rs", f'OPEN{args.prefix}_SSL_free', f'{args.prefix}_OPENSSL_free')
         for symbol in RAND_RS_FUNCTIONS_TO_REPLACE:
             replace_symbols("rand.rs", args.prefix, symbol)
+        for symbol in CRYPTO_RS_FUNCTIONS_TO_REPLACE:
+            replace_symbols("crypto.rs", args.prefix, symbol)
         os.chdir("../../..")
     else:
         print(f'architecture:"{arch}" not supported.')
