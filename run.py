@@ -117,12 +117,12 @@ def cleanup_mkdir(path):
 
 def checkout_quiche_repository(ver):
     print("try to clone quiche repository")
-    subprocess.run(["git", "clone", "--recursive", "https://github.com/cloudflare/quiche"])
+    subprocess.run(["git", "clone", "https://github.com/cloudflare/quiche"])
     print("done")
     os.chdir("quiche")
     print(f'try to checkout version: {ver}')
-    subprocess.run(["git", "fetch"])
     subprocess.run(["git", "checkout", "-b", ver, f'refs/tags/{ver}'])
+    subprocess.run(["git", "submodule", "update", "--init"])
     print("done")
     os.chdir("..")
 
